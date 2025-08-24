@@ -1,0 +1,284 @@
+{% extends "base.html" %}
+
+{% block title %}Security Details - Zero-Knowledge Password Manager{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1>
+                        <i class="bi bi-shield-lock-fill me-2"></i>
+                        Security Architecture
+                    </h1>
+                    <p class="text-muted">Understanding the cryptography and cybersecurity theory behind zero-knowledge password management</p>
+                </div>
+                <a href="{{ url_for('login') }}" class="btn btn-outline-primary">
+                    <i class="bi bi-arrow-left me-2"></i>
+                    Back to Login
+                </a>
+            </div>
+
+            <div class="row">
+                <!-- Zero-Knowledge Architecture -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="bi bi-eye-slash me-2"></i>
+                                Zero-Knowledge Architecture
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Core Principle:</strong> The server never has access to your plaintext passwords or master password.</p>
+                            
+                            <h6 class="mt-3">How it works:</h6>
+                            <ul>
+                                <li><strong>Client-Side Encryption:</strong> All encryption/decryption happens locally in your browser</li>
+                                <li><strong>No Password Transmission:</strong> Your master password never leaves your device</li>
+                                <li><strong>Encrypted Storage:</strong> Only encrypted data is stored on disk</li>
+                                <li><strong>Memory Safety:</strong> Sensitive data is cleared from memory after use</li>
+                            </ul>
+
+                            <div class="alert alert-info mt-3">
+                                <strong>Security Implication:</strong> Even if someone gains access to your vault file, they cannot decrypt it without your master password.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Encryption Standards -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="bi bi-lock me-2"></i>
+                                AES-256-GCM Encryption
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Advanced Encryption Standard with Galois/Counter Mode</strong></p>
+                            
+                            <h6 class="mt-3">Technical Details:</h6>
+                            <ul>
+                                <li><strong>256-bit Key Size:</strong> Provides 2^256 possible keys (practically unbreakable)</li>
+                                <li><strong>Authenticated Encryption:</strong> GCM mode provides both confidentiality and authenticity</li>
+                                <li><strong>Initialization Vectors:</strong> Unique IV for each encryption ensures semantic security</li>
+                                <li><strong>Authentication Tags:</strong> Prevents tampering and ensures data integrity</li>
+                            </ul>
+
+                            <div class="alert alert-success mt-3">
+                                <strong>Industry Standard:</strong> AES-256-GCM is approved by NSA for TOP SECRET information.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Password Hashing -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="bi bi-cpu me-2"></i>
+                                Argon2id Password Hashing
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Winner of the Password Hashing Competition (2015)</strong></p>
+                            
+                            <h6 class="mt-3">Security Features:</h6>
+                            <ul>
+                                <li><strong>Memory-Hard Function:</strong> Resistant to specialized hardware attacks (ASICs)</li>
+                                <li><strong>Time-Cost Parameter:</strong> Configurable computational difficulty</li>
+                                <li><strong>Memory-Cost Parameter:</strong> Requires significant RAM, slowing attackers</li>
+                                <li><strong>Side-Channel Resistance:</strong> Argon2id variant resists timing attacks</li>
+                            </ul>
+
+                            <div class="mt-3">
+                                <strong>Our Configuration:</strong>
+                                <ul class="mt-2">
+                                    <li>Time Cost: 3 iterations</li>
+                                    <li>Memory Cost: 65536 KB (64 MB)</li>
+                                    <li>Parallelism: 1 thread</li>
+                                    <li>Salt: 32 random bytes per password</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Key Derivation -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="bi bi-key me-2"></i>
+                                PBKDF2 Key Derivation
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Password-Based Key Derivation Function 2</strong></p>
+                            
+                            <h6 class="mt-3">Purpose & Implementation:</h6>
+                            <ul>
+                                <li><strong>Master Key Generation:</strong> Derives encryption keys from your master password</li>
+                                <li><strong>Salt-Based:</strong> Each vault uses a unique random salt</li>
+                                <li><strong>Iteration Count:</strong> 100,000 rounds slow down brute force attacks</li>
+                                <li><strong>SHA-256 Based:</strong> Uses cryptographically secure hash function</li>
+                            </ul>
+
+                            <div class="alert alert-warning mt-3">
+                                <strong>Defense Strategy:</strong> High iteration count makes each password guess computationally expensive for attackers.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Perfect Forward Secrecy -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="bi bi-arrow-repeat me-2"></i>
+                                Perfect Forward Secrecy
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Each session uses unique cryptographic material</strong></p>
+                            
+                            <h6 class="mt-3">Implementation:</h6>
+                            <ul>
+                                <li><strong>Session-Specific Keys:</strong> New encryption keys for each login session</li>
+                                <li><strong>No Key Reuse:</strong> Previous sessions remain secure even if current key is compromised</li>
+                                <li><strong>Memory Clearing:</strong> Keys are securely wiped from memory on logout</li>
+                                <li><strong>Temporal Isolation:</strong> Past and future sessions are cryptographically isolated</li>
+                            </ul>
+
+                            <div class="alert alert-info mt-3">
+                                <strong>Benefit:</strong> If your device is compromised, only the current session is at risk, not your entire password history.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Threat Model -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="bi bi-shield-exclamation me-2"></i>
+                                Threat Model & Defenses
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <h6>Protected Against:</h6>
+                            <ul>
+                                <li><strong>Data Breaches:</strong> Encrypted vault files are useless without master password</li>
+                                <li><strong>Network Interception:</strong> No sensitive data transmitted over network</li>
+                                <li><strong>Rainbow Tables:</strong> Unique salts prevent precomputed attack tables</li>
+                                <li><strong>Brute Force:</strong> Slow key derivation makes attacks impractical</li>
+                                <li><strong>Side-Channel Attacks:</strong> Constant-time operations where possible</li>
+                            </ul>
+
+                            <h6 class="mt-3">Limitations:</h6>
+                            <ul>
+                                <li><strong>Keyloggers:</strong> Malware that captures keystrokes</li>
+                                <li><strong>Memory Dumps:</strong> Advanced forensic analysis of RAM</li>
+                                <li><strong>Social Engineering:</strong> Tricking users into revealing passwords</li>
+                                <li><strong>Physical Access:</strong> Unlocked devices with active sessions</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Implementation Details -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="bi bi-code-square me-2"></i>
+                                Technical Implementation Details
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Cryptographic Libraries:</h6>
+                                    <ul>
+                                        <li><strong>Python Cryptography:</strong> FIPS 140-2 validated implementations</li>
+                                        <li><strong>OS Random:</strong> Cryptographically secure random number generation</li>
+                                        <li><strong>Constant-Time Operations:</strong> Prevents timing-based side-channel attacks</li>
+                                    </ul>
+
+                                    <h6 class="mt-3">Security Best Practices:</h6>
+                                    <ul>
+                                        <li><strong>Secure Memory:</strong> Sensitive data cleared after use</li>
+                                        <li><strong>Input Validation:</strong> All user inputs sanitized and validated</li>
+                                        <li><strong>Error Handling:</strong> No information leakage through error messages</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Encryption Process Flow:</h6>
+                                    <ol>
+                                        <li>Generate random salt (32 bytes)</li>
+                                        <li>Derive master key using PBKDF2 (100k iterations)</li>
+                                        <li>Generate random IV for AES-GCM (12 bytes)</li>
+                                        <li>Encrypt data with AES-256-GCM</li>
+                                        <li>Store encrypted data + IV + salt + auth tag</li>
+                                    </ol>
+
+                                    <h6 class="mt-3">Session Management:</h6>
+                                    <ul>
+                                        <li><strong>Session Timeout:</strong> 30-minute inactivity limit</li>
+                                        <li><strong>Secure Cookies:</strong> HTTPOnly and Secure flags</li>
+                                        <li><strong>CSRF Protection:</strong> Cross-site request forgery prevention</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Academic References -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="bi bi-journal-bookmark me-2"></i>
+                                Academic References & Standards
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Cryptographic Standards:</h6>
+                                    <ul>
+                                        <li><strong>NIST FIPS 197:</strong> Advanced Encryption Standard (AES)</li>
+                                        <li><strong>NIST SP 800-38D:</strong> GCM Mode for AES</li>
+                                        <li><strong>RFC 2898:</strong> PBKDF2 Key Derivation</li>
+                                        <li><strong>RFC 9106:</strong> Argon2 Password Hashing</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Security Research:</h6>
+                                    <ul>
+                                        <li><strong>Biryukov et al. (2016):</strong> Argon2 Password Hashing Competition Winner</li>
+                                        <li><strong>McGrew & Viega (2004):</strong> GCM Authenticated Encryption</li>
+                                        <li><strong>Kaliski (2000):</strong> PBKDF2 Key Derivation Function</li>
+                                        <li><strong>NIST (2001):</strong> AES Algorithm Specification</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
